@@ -67,6 +67,7 @@ def predict():
     prediction = list(clf.predict(scaled_payload))
     # TO DO:  Log the output prediction value
     LOG.info(f"Output of prediction value: \n{prediction}")
+    LOG.info("Testing new kubernetes deployment")
     return jsonify({'prediction': prediction})
 
 
