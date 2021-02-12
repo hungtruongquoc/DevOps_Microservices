@@ -35,3 +35,23 @@ jobs:
             cd project-ml-microservice-kubernetes
             . venv/bin/activate
             make lint
+
+  build-docker-image:
+    machine: true
+    steps:
+      - checkout
+      - run:
+        name: log in to docker io
+        command: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run:
+        name: build docker image
+        command: |
+          cd project-ml-microservice-kubernetes
+          docker build . -t hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
+
+workflows:
+  default:
+    jobs:
+      - build
+      - build-docker-image
