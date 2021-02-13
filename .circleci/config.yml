@@ -41,14 +41,14 @@ jobs:
     steps:
       - checkout
       - run:
-        name: log in to docker io
-        command: |
-          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+          name: log in to docker io
+          command: |
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run:
-        name: build docker image
-        command: |
-          cd project-ml-microservice-kubernetes
-          docker build . -t hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
+          name: build docker image
+          command: |
+            cd project-ml-microservice-kubernetes
+            docker build . -t hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
 
 workflows:
   default:
