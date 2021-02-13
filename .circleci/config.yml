@@ -62,7 +62,7 @@ jobs:
       - checkout
       - kubernetes/install-kubectl
       - kubernetes/update-container-image:
-          container-image-update: hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
+          container-image-updates: hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
           record: true
           resource-name: deployment/backbend-master
