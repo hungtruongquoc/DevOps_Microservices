@@ -71,6 +71,7 @@ workflows:
   default:
     jobs:
       - build
-      - build-docker-image
+      - build-docker-image:
+          requires: [build]
       - update-kubernetes-cluster:
           requires: [build-docker-image]
