@@ -63,7 +63,10 @@ jobs:
       - kubernetes/install-kubectl
       - run:
           name: Test the AWS config file
-          command: ls ~/.aws
+          command: |
+            mkdir ~/.aws
+            touch ~/.aws/credentials
+            echo "aws_access_keyid=$AWS_ACCESS_KEY_ID" > ~/.aws/credentials
       - kubernetes/update-container-image:
           container-image-updates: hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
