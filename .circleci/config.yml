@@ -72,4 +72,5 @@ workflows:
     jobs:
       - build
       - build-docker-image
-      - update-kubernetes-cluster
+      - update-kubernetes-cluster:
+          rquires: [build-docker-image]
