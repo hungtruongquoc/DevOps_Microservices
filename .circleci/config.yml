@@ -61,6 +61,9 @@ jobs:
     steps:
       - checkout
       - kubernetes/install-kubectl
+      - run:
+          name: Test the AWS config file
+          command: ls ~/.aws
       - kubernetes/update-container-image:
           container-image-updates: hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
