@@ -76,7 +76,7 @@ jobs:
           # This is the content of ~/.kube/config file with base64 encode
           kubeconfig: KUBECONFIG_DATA
       - kubernetes/update-container-image:
-          container-image-updates: hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
+          container-image-updates: master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
           record: true
           resource-name: deployment/backbend-master
