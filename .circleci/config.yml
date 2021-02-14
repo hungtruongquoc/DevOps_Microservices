@@ -80,6 +80,7 @@ jobs:
           get-rollout-status: true
           record: true
           resource-name: deployment/backbend-master
+          show-kubectl-command: true
 
 workflows:
   default:
