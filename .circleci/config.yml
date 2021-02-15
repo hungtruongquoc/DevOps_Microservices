@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  kubernetes: circleci/kubernetes@0.11.2
+  aws-eks: circleci/aws-eks@1.0.3
 
 jobs:
   build:
@@ -71,11 +71,19 @@ jobs:
             cat ~/.aws/credentials
             export AWS_PROFILE=default
             export AWS_DEFAULT_REGION=us-west-2
-      - kubernetes/install-kubectl
-      - kubernetes/install-kubeconfig:
+      - run:
+          name: Create the Kubernetes config file
+          command: |
+            mkdir ~/.kube
+            touch ~/.kube/config
+            echo KUBECONFIG_DATA | base64 -d >> ~/.kube/config
+      - aws-eks/install-eksctl
+      - aws-eks/update-kubeconfig-with-authenticator:
+          install-kubectl: true
+          cluster-name: EKS-udacity-capstone-cluster
           # This is the content of ~/.kube/config file with base64 encode
           kubeconfig: KUBECONFIG_DATA
-      - kubernetes/update-container-image:
+      - aws-eks/update-container-image:
           container-image-updates: master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
           record: true
