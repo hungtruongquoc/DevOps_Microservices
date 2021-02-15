@@ -87,10 +87,10 @@ jobs:
       #     # kubeconfig: KUBECONFIG_DATA
       - kubernetes/install-kubectl
       - kubernetes/install-kubeconfig
-      - run:
-          name: prepare authetication
-          command: |
-            prepare-kubectl
+      # - run:
+      #     name: prepare authetication
+      #     command: |
+      #       prepare-kubectl
       - kubernetes/update-container-image:
           container-image-updates: master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
