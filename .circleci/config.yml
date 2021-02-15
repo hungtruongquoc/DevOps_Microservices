@@ -78,7 +78,7 @@ jobs:
             mkdir ~/.kube
             touch ~/.kube/config
             echo KUBECONFIG_DATA >> temp
-            base64 -d temp >> ~/.kube/config
+            base64 -di temp >> ~/.kube/config
       - aws-eks/install-eksctl
       - aws-eks/update-kubeconfig-with-authenticator:
           install-kubectl: true
