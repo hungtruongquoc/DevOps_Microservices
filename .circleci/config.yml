@@ -94,9 +94,9 @@ jobs:
       #       prepare-kubectl
 
       - run:
-        name: list deployment
-        command: |
-          kubectl get deployments
+          name: list deployment
+          command: |
+            kubectl get deployments
       - kubernetes/update-container-image:
           container-image-updates: master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
           get-rollout-status: true
