@@ -86,6 +86,7 @@ jobs:
       #     # This is the content of ~/.kube/config file with base64 encode
       #     # kubeconfig: KUBECONFIG_DATA
       - kubernetes/install-kubectl
+      - aws-eks/install-aws-iam-authenticator
       - kubernetes/install-kubeconfig
       # - run:
       #     name: prepare authetication
