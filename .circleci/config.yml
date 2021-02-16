@@ -110,7 +110,7 @@ workflows:
       - build
       - build-docker-image:
           requires:
-            - builds
+            - build
       - update-kubernetes-cluster:
           requires:
             - build-docker-image
