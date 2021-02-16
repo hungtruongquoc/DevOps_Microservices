@@ -120,5 +120,6 @@ workflows:
           show-kubectl-command: true
           get-rollout-status: true
           aws-region: "us-west-2"
+          resource-name: "deployment/backend-master"
           requires:
             - update-kubernetes-cluster
