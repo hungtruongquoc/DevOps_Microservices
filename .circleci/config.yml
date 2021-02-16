@@ -2,7 +2,12 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
+
+orbs:
+  aws-eks: circleci/aws-eks@1.0.3
+  kubernetes: circleci/kubernetes@0.11.2
+
 jobs:
   build:
     docker:
@@ -35,3 +40,86 @@ jobs:
             cd project-ml-microservice-kubernetes
             . venv/bin/activate
             make lint
+
+  build-docker-image:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: log in to docker io
+          command: |
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run:
+          name: build docker image
+          command: |
+            cd project-ml-microservice-kubernetes
+            docker build . -t hungtruongquoc/udacity-devops:$CIRCLE_BRANCH
+            docker push $DOCKER_PATH
+
+  update-kubernetes-cluster:
+    docker:
+      - image: "cimg/python:3.9.1"
+    steps:
+      - checkout
+      - run:
+          name: Test the AWS config file
+          command: |
+            mkdir ~/.aws
+            touch ~/.aws/credentials
+            echo "[default]" > ~/.aws/credentials
+            echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+            echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+            cat ~/.aws/credentials
+            export AWS_PROFILE=default
+            export AWS_DEFAULT_REGION=us-west-2
+      # - run:
+      #     name: Create the Kubernetes config file
+      #     command: |
+      #       mkdir ~/.kube
+      #       touch ~/.kube/config
+      #       echo KUBECONFIG_DATA >> temp
+      #       base64 -di temp >> ~/.kube/config
+      # - aws-eks/install-eksctl
+      # - aws-eks/update-kubeconfig-with-authenticator:
+      #     install-kubectl: true
+      #     cluster-name: EKS-udacity-capstone-cluster
+      #     # This is the content of ~/.kube/config file with base64 encode
+      #     # kubeconfig: KUBECONFIG_DATA
+      - kubernetes/install-kubectl
+      - aws-eks/install-aws-iam-authenticator
+      - kubernetes/install-kubeconfig
+      # - run:
+      #     name: prepare authetication
+      #     command: |
+      #       prepare-kubectl
+
+      - run:
+          name: list deployment
+          command: |
+            kubectl describe deployments
+      # - kubernetes/update-container-image:
+      #     container-image-updates: "master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH"
+      #     get-rollout-status: true
+      #     record: true
+      #     resource-name: deployment/backbend-master
+      #     show-kubectl-command: true
+
+workflows:
+  default:
+    jobs:
+      - build
+      - build-docker-image:
+          requires:
+            - build
+      - update-kubernetes-cluster:
+          requires:
+            - build-docker-image
+      - aws-eks/update-container-image:
+          cluster-name: EKS-udacity-capstone-cluster
+          container-image-updates: "master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH"
+          show-kubectl-command: true
+          get-rollout-status: true
+          aws-region: "us-west-2"
+          resource-name: "deployment/backend-master"
+          requires:
+            - update-kubernetes-cluster
