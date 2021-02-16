@@ -117,5 +117,8 @@ workflows:
       - aws-eks/update-container-image:
           cluster-name: EKS-udacity-capstone-cluster
           container-image-updates: "master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH"
+          show-kubectl-command: true
+          get-rollout-status: true
+          aws-region: "us-west-2"
           requires:
             - update-kubernetes-cluster
