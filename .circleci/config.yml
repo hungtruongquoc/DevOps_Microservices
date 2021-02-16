@@ -103,15 +103,19 @@ jobs:
       #     record: true
       #     resource-name: deployment/backbend-master
       #     show-kubectl-command: true
-      - aws-eks/update-container-image:
-          cluster-name: EKS-udacity-capstone-cluster
-          container-image-updates: "master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH"
 
 workflows:
   default:
     jobs:
       - build
       - build-docker-image:
-          requires: [build]
+          requires:
+            - builds
       - update-kubernetes-cluster:
-          requires: [build-docker-image]
+          requires:
+            - build-docker-image
+      - aws-eks/update-container-image:
+          cluster-name: EKS-udacity-capstone-cluster
+          container-image-updates: "master=hungtruongquoc/udacity-devops:$CIRCLE_BRANCH"
+          requires:
+            - update-kubernetes-cluster
